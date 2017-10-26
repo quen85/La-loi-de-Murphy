@@ -7,6 +7,7 @@ var cursors;
 var stars;
 var score = 0;
 var scoreText;
+var myHealthBar;
 
 function preload() {
   game.load.image('sky', 'assets/sky.png');
@@ -16,6 +17,7 @@ function preload() {
 }
 
 function create() {
+    myHealthBar = new Life({number: 3, x: 200, y: 50});
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -71,6 +73,7 @@ function create() {
 
     //  The score
     scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    vieText = game.add.text(16, 50, 'Vies: ' + myHealthBar.number, { fontSize: '32px', fill: '#000' });
 
     cursors = game.input.keyboard.createCursorKeys();
 }
@@ -82,6 +85,7 @@ function update() {
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    console.log(myHealthBar.number);
 
 
     //  Reset the players velocity (movement)
@@ -116,7 +120,7 @@ function update() {
     }
 }
 
-function collectStar (player, star) {
+function collectStar (player, star, health) {
 
     // Removes the star from the screen
     star.kill();
@@ -124,5 +128,28 @@ function collectStar (player, star) {
     //  Add and update the score
     score += 10;
     scoreText.text = 'Score: ' + score;
+    myHealthBar.decreaseNumber();
+    vieText.text = 'Vies: ' + myHealthBar.number;
+}
 
+var Life = function(config){
+    this.number = config.number;
+    this.setPosition(config.x, config.y);
+}
+
+Life.prototype.setPosition= function(x, y){
+    this.x = x;
+    this.y = y;
+
+    if(this.bgSprite !== undefined && this.barSprite !== undefined){
+        this.bgSprite.position.x = x;
+        this.bgSprite.position.y = y;
+
+        this.barSprite.position.x = x - this.config.width/2;
+        this.barSprite.position.y = y;
+    }
+}
+
+Life.prototype.decreaseNumber = function(){
+    this.number--;
 }
