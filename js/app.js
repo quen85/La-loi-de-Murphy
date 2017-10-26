@@ -1,8 +1,11 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var player;
+var enemy;
 var platforms;
 var cursors;
+var obstacle;
+var obstacles =[];
 
 var stars;
 var score = 0;
@@ -10,10 +13,11 @@ var scoreText;
 var myHealthBar;
 
 function preload() {
-  game.load.image('sky', 'assets/sky.png');
+  game.load.image('sky', 'assets/couloir.jpg');
   game.load.image('ground', 'assets/platform.png');
   game.load.image('star', 'assets/star.png');
-  game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+  game.load.spritesheet('student', 'assets/dude.png', 32, 48);
+  game.load.spritesheet('enemy', 'assets/spriteMechante.png', 25, 51);
 }
 
 function create() {
@@ -39,8 +43,12 @@ function create() {
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
 
+
+
+    //## PLAYER
+
     // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'dude');
+    player = game.add.sprite(32, game.world.height - 150, 'student');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -54,22 +62,20 @@ function create() {
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-    stars = game.add.group();
 
-    stars.enableBody = true;
+    //## OBSTACLE
 
-    //  Here we'll create 12 of them evenly spaced apart
-    for (var i = 0; i < 12; i++)
-    {
-        //  Create a star inside of the 'stars' group
-        var star = stars.create(i * 70, 0, 'star');
+    game.time.events.loop(Phaser.Timer.SECOND * 2, createObstacle, this);
 
-        //  Let gravity do its thing
-        star.body.gravity.y = 6;
 
-        //  This just gives each star a slightly random bounce value
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
+    //## ENEMY
+
+    enemy = game.add.sprite(600, game.world.height - 150, 'enemy');
+    game.physics.arcade.enable(enemy);
+
+    enemy.body.bounce.y = 0.2;
+    enemy.body.gravity.y = 300;
+    enemy.body.collideWorldBounds = true;
 
     //  The score
     scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
@@ -81,11 +87,17 @@ function create() {
 function update() {
   //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(enemy, platforms);
     game.physics.arcade.collide(stars, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
-    console.log(myHealthBar.number);
+    game.physics.arcade.overlap(player, obstacles[0], collectStar, null, this);
+
+    if (obstacles[0]) {
+      obstacles[0].events.onOutOfBounds.add(function(){
+        obstacles.shift();
+      }, this);
+    }
 
 
     //  Reset the players velocity (movement)
@@ -116,14 +128,28 @@ function update() {
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down && hitPlatform)
     {
-        player.body.velocity.y = -350;
+        player.body.velocity.y = -250;
     }
 }
 
-function collectStar (player, star, health) {
+function createObstacle() {
+
+    //  A bouncey ball sprite just to visually see what's going on.
+
+    obstacle = game.add.sprite(603, 500, 'star');
+
+    game.physics.enable(obstacle, Phaser.Physics.ARCADE);
+
+    obstacle.body.velocity.x = -150;
+
+    obstacles.push(obstacle);
+}
+
+function collectStar (player, obstacle, health) {
 
     // Removes the star from the screen
-    star.kill();
+    obstacle.kill();
+    obstacles.shift();
 
     //  Add and update the score
     score += 10;
