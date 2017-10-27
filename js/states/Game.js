@@ -52,6 +52,8 @@ LoiDeMurphy.Game.prototype = {
         this.obstacles.physicsBodyType = Phaser.Physics.ARCADE;
 
         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.createObstacle, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.createObstacleSecond, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND * 7, this.createObstacleThird, this);
 
         //## Mots
         this.mots = this.game.add.group();
@@ -76,6 +78,26 @@ LoiDeMurphy.Game.prototype = {
         this.enemy.body.collideWorldBounds = true;
 
         this.enemy.animations.add('move', [1, 2, 3, 4, 5], 3, true);
+
+        
+        this.enemy_second = this.game.add.sprite(1500, this.game.world.height - 600, 'enemy');
+        this.game.physics.arcade.enable(this.enemy_second);
+
+        this.enemy_second.body.bounce.y = 0.2;
+        this.enemy_second.body.gravity.y = 300;
+        this.enemy_second.body.collideWorldBounds = true;
+
+        this.enemy_second.animations.add('move_second', [1, 2, 3, 4, 5], 3, true);
+
+
+        this.enemy_third = this.game.add.sprite(2300, this.game.world.height - 600, 'enemy');
+        this.game.physics.arcade.enable(this.enemy_third);
+
+        this.enemy_third.body.bounce.y = 0.2;
+        this.enemy_third.body.gravity.y = 300;
+        this.enemy_third.body.collideWorldBounds = true;
+
+        this.enemy_third.animations.add('move_third', [1, 2, 3, 4, 5], 3, true);
 
         //  The score
         this.vieText = 0;
@@ -110,6 +132,8 @@ LoiDeMurphy.Game.prototype = {
         //  Collide the this.player and the stars with the platforms
         var hitPlatform = this.game.physics.arcade.collide(this.player, this.platforms);
         this.game.physics.arcade.collide(this.enemy, this.platforms);
+        this.game.physics.arcade.collide(this.enemy_second, this.platforms);
+        this.game.physics.arcade.collide(this.enemy_third, this.platforms);
         this.game.physics.arcade.collide(this.stars, this.platforms);
 
         //  Checks to see if the this.player overlaps with any of the stars, if he does call the collectStar function
@@ -165,12 +189,31 @@ LoiDeMurphy.Game.prototype = {
 
         this.i++;
 
-        // obstacle = game.add.sprite(603, 500, 'star');
+    },
 
-        // game.physics.enable(obstacle, Phaser.Physics.ARCADE);
+    createObstacleSecond: function() {
+        this.game.time.events.loop(this.enemy_second.animations.play('move_second'));
 
+        var o_s = this.obstacles.create(1503, 550, 'star');
+        o_s.width = 30;
+        o_s.height = 30;
+        o_s.name = 'obstacle' + this.ii;
+        o_s.body.velocity.x = -150;
 
-        // obstacles.push(obstacle);
+        this.ii++;
+
+    },
+
+    createObstacleThird: function() {
+        this.game.time.events.loop(this.enemy_second.animations.play('move_third'));
+
+        var o_t = this.obstacles.create(2303, 550, 'star');
+        o_t.width = 30;
+        o_t.height = 30;
+        o_t.name = 'obstacle' + this.iii;
+        o_t.body.velocity.x = -150;
+
+        this.iii++;
 
     },
 
