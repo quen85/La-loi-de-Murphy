@@ -4,6 +4,7 @@ LoiDeMurphy.MainMenu = function(game){};
 
 LoiDeMurphy.MainMenu.prototype = {
     create: function(){
+        var music = this.game.sound.play('music');
         this.background = this.add.sprite(0, 0, 'fond');
         this.background.height = this.game.height;
         this.background.width = this.game.width;

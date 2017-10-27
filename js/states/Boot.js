@@ -16,6 +16,7 @@ LoiDeMurphy.Boot.prototype = {
         this.load.image('replay-bouton', 'assets/BoutonTryAgain.png');
         this.load.image('textExplications', 'assets/TextExplications.png');
         this.load.image('go-bouton', 'assets/BoutonGo.png');
+        this.load.audio('music', 'assets/music.mp3');
     },
     create: function() {
         //loading screen will have a white background
