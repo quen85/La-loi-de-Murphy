@@ -12,8 +12,12 @@ var score = 0;
 var scoreText;
 var myHealthBar;
 
+
+var cursors;
+var d;
+
 function preload() {
-  game.load.image('sky', 'assets/couloir.jpg');
+  game.load.image('sky', 'assets/17.jpg');
   game.load.image('ground', 'assets/platform.png');
   game.load.image('star', 'assets/star.png');
   game.load.spritesheet('student', 'assets/dude.png', 32, 48);
@@ -22,6 +26,18 @@ function preload() {
 
 function create() {
     myHealthBar = new Life({number: 3, x: 200, y: 50});
+
+    game.world.resize(3000, 600);
+
+    var g = game.add.group();
+    g.x = 500;
+
+    // d = game.add.sprite(1000, 300, 'phaser');
+    d = g.create(100, 300, 'sky');
+    d.anchor.setTo(0.5, 0.5);
+
+    cursors = game.input.keyboard.createCursorKeys();
+
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -85,6 +101,54 @@ function create() {
 }
 
 function update() {
+  d.angle += 1;
+
+    if (cursors.up.isDown)
+    {
+        if (cursors.up.shiftKey)
+        {
+            d.angle++;
+        }
+        else
+        {
+            game.camera.y -= 2.5;
+        }
+    }
+    else if (cursors.down.isDown)
+    {
+        if (cursors.down.shiftKey)
+        {
+            d.angle--;
+        }
+        else
+        {
+            game.camera.y += 2.5;
+        }
+    }
+
+    if (cursors.left.isDown)
+    {
+        if (cursors.left.shiftKey)
+        {
+            game.world.rotation -= 0.05;
+        }
+        else
+        {
+            game.camera.x -= 2.5;
+        }
+    }
+    else if (cursors.right.isDown)
+    {
+        if (cursors.right.shiftKey)
+        {
+            game.world.rotation += 0.05;
+        }
+        else
+        {
+            game.camera.x += 2.5;
+        }
+    }
+
   //  Collide the player and the stars with the platforms
     var hitPlatform = game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(enemy, platforms);
@@ -178,4 +242,8 @@ Life.prototype.setPosition= function(x, y){
 
 Life.prototype.decreaseNumber = function(){
     this.number--;
+}
+
+function render() {
+    game.debug.cameraInfo(game.camera, 32, 32);
 }
