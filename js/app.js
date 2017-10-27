@@ -19,14 +19,15 @@ function preload() {
   game.load.image('sky', 'assets/16.jpg');
   game.load.image('ground', 'assets/platform.png');
   game.load.image('star', 'assets/star.png');
-  game.load.spritesheet('student', 'assets/player.png', 75, 136);
-  game.load.spritesheet('enemy', 'assets/enemy.png', 25, 51);
+  game.load.spritesheet('student', 'assets/player.png', 188, 325, 16);
+  game.load.spritesheet('enemy', 'assets/enemy.png', 75, 136);
 }
 
 function create() {
     myHealthBar = new Life({number: 3, x: 200, y: 50});
 
     game.world.resize(3000, 600);
+    game.world.setBounds(0, 0, 3000, 600);
     game.physics.startSystem(Phaser.Physics.ARCADE);
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -40,17 +41,15 @@ function create() {
     ground.body.immovable = true;
     ground.fixedToCamera = true;
 
-
-
     //## PLAYER
-    player = game.add.sprite(32, game.world.height - 150, 'student');
+    player = game.add.sprite(32, game.world.height - 50, 'student');
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 300;
     player.body.collideWorldBounds = true;
 
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+    player.animations.add('left', [0, 1, 2], 10, true);
+    player.animations.add('right', [15, 14, 13], 10, true);
 
 
     //## OBSTACLE
@@ -69,6 +68,8 @@ function create() {
     enemy.body.bounce.y = 0.2;
     enemy.body.gravity.y = 300;
     enemy.body.collideWorldBounds = true;
+
+    enemy.animations.add('move', [1, 2, 3, 4, 5], 3, true);
 
     //  The score
     vieText = game.add.text(16, 50, 'Vies: ' + myHealthBar.number, { fontSize: '32px', fill: '#000' });
@@ -144,7 +145,7 @@ function update() {
 
 function createObstacle() {
 
-    //  A bouncey ball sprite just to visually see what's going on.
+    game.time.events.loop(enemy.animations.play('move'));
 
     var o = obstacles.create(603, 500, 'star');
     o.name = 'obstacle' + i;
