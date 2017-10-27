@@ -5,6 +5,8 @@ LoiDeMurphy.MainMenu = function(game){};
 LoiDeMurphy.MainMenu.prototype = {
     create: function(){
         this.background = this.add.sprite(0, 0, 'fond');
+        this.background.height = this.game.height;
+        this.background.width = this.game.width;
         this.splash = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'logo');
         this.splash.anchor.setTo(0.5);
         this.splash.scale.setTo(0.2,0.2);
