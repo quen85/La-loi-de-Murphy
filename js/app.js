@@ -5,7 +5,8 @@ var enemy;
 var platforms;
 var cursors;
 var obstacle;
-var obstacles =[];
+var obstacles;
+var i = 0;
 
 var stars;
 var score = 0;
@@ -80,6 +81,9 @@ function create() {
 
 
     //## OBSTACLE
+    obstacles = game.add.group();
+    obstacles.enableBody = true;
+    obstacles.physicsBodyType = Phaser.Physics.ARCADE;
 
     game.time.events.loop(Phaser.Timer.SECOND * 2, createObstacle, this);
 
@@ -155,13 +159,7 @@ function update() {
     game.physics.arcade.collide(stars, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    game.physics.arcade.overlap(player, obstacles[0], collectStar, null, this);
-
-    if (obstacles[0]) {
-      obstacles[0].events.onOutOfBounds.add(function(){
-        obstacles.shift();
-      }, this);
-    }
+    game.physics.arcade.overlap(player, obstacles, collectStar, null, this);
 
 
     //  Reset the players velocity (movement)
@@ -200,20 +198,25 @@ function createObstacle() {
 
     //  A bouncey ball sprite just to visually see what's going on.
 
-    obstacle = game.add.sprite(603, 500, 'star');
+    var o = obstacles.create(603, 500, 'star');
+    o.name = 'obstacle' + i;
+    o.body.velocity.x = -150;
 
-    game.physics.enable(obstacle, Phaser.Physics.ARCADE);
+    i++;
+    
+    // obstacle = game.add.sprite(603, 500, 'star');
 
-    obstacle.body.velocity.x = -150;
+    // game.physics.enable(obstacle, Phaser.Physics.ARCADE);
 
-    obstacles.push(obstacle);
+
+    // obstacles.push(obstacle);
+
 }
 
 function collectStar (player, obstacle, health) {
 
     // Removes the star from the screen
     obstacle.kill();
-    obstacles.shift();
 
     //  Add and update the score
     score += 10;
