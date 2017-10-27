@@ -13,6 +13,6 @@ LoiDeMurphy.MainMenu.prototype = {
         playButton.anchor.setTo(0.5,0.5);
     },
     playTheGame: function(){
-        this.game.state.start("Game");
+        this.game.state.start("Explanations");
     }
 };

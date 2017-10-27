@@ -64,8 +64,7 @@ create: function() {
     this.enemy.animations.add('move', [1, 2, 3, 4, 5], 3, true);
 
     //  The score
-    this.vieText = this.game.add.text(16, 50, 'Vies: ' + myHealthBar.number, { fontSize: '32px', fill: '#000' });
-    this.vieText.fixedToCamera = true;
+    this.vieText = 0;
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 },
@@ -160,8 +159,17 @@ collectStar: function(player, obstacle, health) {
     obstacle.kill();
 
     //  Add and update the score
-    myHealthBar.decreaseNumber();
-    this.vieText.text = 'Vies: ' + myHealthBar.number;
+    myHealthBar.decreaseNumber(this.game);
+    this.vieText ++;
+    var groupIcon = [];
+    for(var i = 0; i < this.vieText; i++){
+        groupIcon.push(this.add.sprite(50 * (i + 1), 50, 'iconeVie'));
+    }
+    for(var i = 0; i < groupIcon.length; i++){
+        groupIcon[i].width = 40;
+        groupIcon[i].height = 40;
+        groupIcon[i].fixedToCamera = true;
+    }
 },
 
 };
@@ -178,6 +186,9 @@ Life.prototype.setPosition= function(x, y){
     this.y = y;
 }
 
-Life.prototype.decreaseNumber = function(){
+Life.prototype.decreaseNumber = function(game){
     this.number--;
+    if(this.number === 0){
+        game.state.start("GameOver");
+    }
 }
