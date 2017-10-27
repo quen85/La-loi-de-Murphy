@@ -18,9 +18,9 @@ var d;
 function preload() {
   game.load.image('sky', 'assets/16.jpg');
   game.load.image('ground', 'assets/platform.png');
-  game.load.image('star', 'assets/star.png');
-  game.load.spritesheet('student', 'assets/player.png', 188, 325, 16);
-  game.load.spritesheet('enemy', 'assets/enemy.png', 75, 136);
+  game.load.image('star', 'assets/feuille.png');
+  game.load.spritesheet('student', 'assets/player.png', 188, 325);
+  game.load.spritesheet('enemy', 'assets/enemy.png', 188, 325);
 }
 
 function create() {
@@ -36,20 +36,22 @@ function create() {
     platforms = game.add.group();
     platforms.enableBody = true;
 
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
+    var ground = platforms.create(0, game.world.height - 32, 'ground');
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
     ground.fixedToCamera = true;
 
     //## PLAYER
-    player = game.add.sprite(32, game.world.height - 50, 'student');
+    player = game.add.sprite(32, game.world.height - 600, 'student');
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 300;
     player.body.collideWorldBounds = true;
+    console.log(player.body.velocity.y);
 
     player.animations.add('left', [0, 1, 2], 10, true);
-    player.animations.add('right', [15, 14, 13], 10, true);
+    player.animations.add('right', [16, 15, 14], 10, true);
+    player.animations.add('jump', [9, 10, 11], 10, true);
 
 
     //## OBSTACLE
@@ -62,7 +64,7 @@ function create() {
 
     //## ENEMY
 
-    enemy = game.add.sprite(600, game.world.height - 150, 'enemy');
+    enemy = game.add.sprite(600, game.world.height - 600, 'enemy');
     game.physics.arcade.enable(enemy);
 
     enemy.body.bounce.y = 0.2;
@@ -133,13 +135,14 @@ function update() {
         //  Stand still
         player.animations.stop();
 
-        player.frame = 4;
+        player.frame = 8;
     }
 
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down && hitPlatform)
     {
-        player.body.velocity.y = -250;
+        player.body.velocity.y = -600;
+        player.frame = 10;
     }
 }
 
@@ -147,7 +150,9 @@ function createObstacle() {
 
     game.time.events.loop(enemy.animations.play('move'));
 
-    var o = obstacles.create(603, 500, 'star');
+    var o = obstacles.create(603, 350, 'star');
+    o.width = 30;
+    o.height = 30;
     o.name = 'obstacle' + i;
     o.body.velocity.x = -150;
 
