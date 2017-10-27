@@ -9,8 +9,6 @@ var obstacles;
 var i = 0;
 
 var stars;
-var score = 0;
-var scoreText;
 var myHealthBar;
 
 
@@ -59,6 +57,7 @@ function create() {
 
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
+    ground.fixedToCamera = true;
 
 
 
@@ -98,8 +97,8 @@ function create() {
     enemy.body.collideWorldBounds = true;
 
     //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     vieText = game.add.text(16, 50, 'Vies: ' + myHealthBar.number, { fontSize: '32px', fill: '#000' });
+    vieText.fixedToCamera = true;
 
     cursors = game.input.keyboard.createCursorKeys();
 }
@@ -168,14 +167,14 @@ function update() {
     if (cursors.left.isDown)
     {
         //  Move to the left
-        player.body.velocity.x = -150;
+        player.body.velocity.x = -125;
 
         player.animations.play('left');
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
-        player.body.velocity.x = 150;
+        player.body.velocity.x = 125;
 
         player.animations.play('right');
     }
@@ -219,8 +218,6 @@ function collectStar (player, obstacle, health) {
     obstacle.kill();
 
     //  Add and update the score
-    score += 10;
-    scoreText.text = 'Score: ' + score;
     myHealthBar.decreaseNumber();
     vieText.text = 'Vies: ' + myHealthBar.number;
 }
