@@ -205,7 +205,7 @@ LoiDeMurphy.Game.prototype = {
     },
 
     createObstacleThird: function() {
-        this.game.time.events.loop(this.enemy_second.animations.play('move_third'));
+        this.game.time.events.loop(this.enemy_third.animations.play('move_third'));
 
         var o_t = this.obstacles.create(2303, 550, 'star');
         o_t.width = 30;
